@@ -1,0 +1,954 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1, user-scalable=no">
+<title>8체질 자가진단 (참고용)</title>
+<style>
+  :root{
+    --bg:#f6f4ef;
+    --card:#ffffff;
+    --ink:#2b2b28;
+    --sub:#6b6960;
+    --line:#e6e2d8;
+    --accent:#8a6d3b;
+    --accent-strong:#5c4726;
+    --danger:#b3452f;
+    --radius:16px;
+    --shadow:0 4px 18px rgba(0,0,0,0.06);
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    background:var(--bg);
+    color:var(--ink);
+    font-family:"Apple SD Gothic Neo","Malgun Gothic","Noto Sans KR",-apple-system,BlinkMacSystemFont,sans-serif;
+    line-height:1.55;
+    min-height:100vh;
+    -webkit-font-smoothing:antialiased;
+  }
+  #app{
+    max-width:520px;
+    margin:0 auto;
+    min-height:100vh;
+    padding:24px 20px 48px;
+    display:flex;
+    flex-direction:column;
+  }
+  .screen{display:none;flex-direction:column;flex:1;}
+  .screen.active{display:flex;}
+
+  h1{font-size:1.5rem;margin:0 0 8px;color:var(--accent-strong);}
+  h2{font-size:1.25rem;margin:0 0 6px;}
+  h3{font-size:1.05rem;margin:0 0 4px;}
+  p{margin:0 0 12px;}
+
+  .card{
+    background:var(--card);
+    border-radius:var(--radius);
+    box-shadow:var(--shadow);
+    padding:20px;
+    margin-bottom:16px;
+    border:1px solid var(--line);
+  }
+
+  .disclaimer{
+    background:#fbf3e9;
+    border:1px solid #e9d8bb;
+    border-radius:12px;
+    padding:14px 16px;
+    font-size:0.85rem;
+    color:#6b5636;
+    margin-bottom:20px;
+  }
+  .disclaimer strong{display:block;margin-bottom:4px;color:#5c4726;}
+
+  .btn{
+    display:block;
+    width:100%;
+    text-align:center;
+    padding:15px 18px;
+    border-radius:12px;
+    border:none;
+    font-size:1rem;
+    font-weight:600;
+    cursor:pointer;
+    transition:transform .06s ease, opacity .15s ease;
+    -webkit-tap-highlight-color:transparent;
+  }
+  .btn:active{transform:scale(0.98);}
+  .btn-primary{
+    background:var(--accent-strong);
+    color:#fff;
+  }
+  .btn-secondary{
+    background:#fff;
+    color:var(--accent-strong);
+    border:1px solid var(--accent-strong);
+    margin-top:10px;
+  }
+  .btn-ghost{
+    background:transparent;
+    color:var(--sub);
+    border:1px solid var(--line);
+    margin-top:10px;
+  }
+
+  .intro-list{
+    font-size:0.92rem;
+    color:var(--sub);
+    padding-left:1.1em;
+    margin:0 0 4px;
+  }
+  .intro-list li{margin-bottom:4px;}
+
+  /* progress */
+  .progress-wrap{margin-bottom:18px;}
+  .progress-track{
+    height:8px;
+    background:var(--line);
+    border-radius:6px;
+    overflow:hidden;
+  }
+  .progress-fill{
+    height:100%;
+    background:var(--accent);
+    border-radius:6px;
+    transition:width .25s ease;
+    width:0%;
+  }
+  .progress-label{
+    font-size:0.8rem;
+    color:var(--sub);
+    margin-top:6px;
+    text-align:right;
+  }
+
+  .q-category{
+    display:inline-block;
+    font-size:0.75rem;
+    color:var(--accent-strong);
+    background:#f1e9da;
+    padding:3px 10px;
+    border-radius:999px;
+    margin-bottom:10px;
+    font-weight:600;
+  }
+  .q-text{font-size:1.15rem;font-weight:700;margin-bottom:18px;}
+
+  .options{display:flex;flex-direction:column;gap:10px;}
+  .option{
+    text-align:left;
+    padding:14px 16px;
+    border-radius:12px;
+    border:1.5px solid var(--line);
+    background:#fff;
+    font-size:0.98rem;
+    cursor:pointer;
+    transition:border-color .12s ease, background .12s ease;
+  }
+  .option:hover{border-color:var(--accent);}
+  .option.selected{
+    border-color:var(--accent-strong);
+    background:#f6efe2;
+  }
+
+  .nav-row{display:flex;gap:10px;margin-top:20px;}
+  .nav-row .btn{margin-top:0;}
+
+  /* result */
+  .result-hero{
+    text-align:center;
+    padding:28px 20px;
+    background:linear-gradient(160deg,#fbf3e9,#f6efe2);
+    border-radius:var(--radius);
+    margin-bottom:16px;
+    border:1px solid var(--line);
+  }
+  .result-hero .type-en{
+    color:var(--sub);
+    font-size:0.85rem;
+    letter-spacing:0.03em;
+    margin-bottom:6px;
+  }
+  .result-hero .type-kr{
+    font-size:1.8rem;
+    font-weight:800;
+    color:var(--accent-strong);
+    margin-bottom:10px;
+  }
+  .organ-tags{
+    display:flex;
+    justify-content:center;
+    gap:8px;
+    flex-wrap:wrap;
+  }
+  .organ-tag{
+    font-size:0.8rem;
+    padding:5px 12px;
+    border-radius:999px;
+    background:#fff;
+    border:1px solid var(--line);
+  }
+  .organ-tag.strong{color:#2f6d3c;border-color:#bfe0c6;background:#eef8ef;}
+  .organ-tag.weak{color:var(--danger);border-color:#e6c3b8;background:#fbeee9;}
+
+  .near-note{
+    font-size:0.85rem;
+    color:var(--accent-strong);
+    background:#f1e9da;
+    border-radius:10px;
+    padding:10px 12px;
+    margin-bottom:16px;
+  }
+
+  .food-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+  .food-box{
+    border-radius:12px;
+    padding:14px;
+    border:1px solid var(--line);
+  }
+  .food-box.good{background:#eef8ef;border-color:#cfe9d3;}
+  .food-box.bad{background:#fbeee9;border-color:#eecfc2;}
+  .food-box h3{font-size:0.9rem;margin-bottom:8px;}
+  .food-box.good h3{color:#2f6d3c;}
+  .food-box.bad h3{color:var(--danger);}
+  .food-box ul{margin:0;padding-left:1.1em;font-size:0.88rem;}
+  .food-box li{margin-bottom:4px;}
+
+  .section-title{
+    font-size:0.95rem;
+    font-weight:700;
+    margin:22px 0 10px;
+    color:var(--accent-strong);
+  }
+
+  .lifestyle-list{padding-left:1.2em;font-size:0.92rem;margin:0;}
+  .lifestyle-list li{margin-bottom:6px;}
+
+  .score-detail{
+    font-size:0.78rem;
+    color:var(--sub);
+    margin-top:6px;
+  }
+
+  .share-row{display:flex;gap:10px;margin-top:6px;}
+  .share-row .btn{flex:1;margin-top:0;}
+
+  #shareCanvas{display:none;}
+
+  footer.app-footer{
+    text-align:center;
+    font-size:0.75rem;
+    color:var(--sub);
+    margin-top:24px;
+  }
+
+  @media (max-width:380px){
+    .food-grid{grid-template-columns:1fr;}
+  }
+</style>
+</head>
+<body>
+<div id="app">
+
+  <!-- ===================== 시작 화면 ===================== -->
+  <section class="screen active" id="screen-intro">
+    <h1>8체질 자가진단</h1>
+    <p style="color:var(--sub);">간단한 설문으로 나의 체질 경향을 확인해보세요.</p>
+
+    <div class="card">
+      <h2 style="margin-bottom:10px;">이런 걸 알 수 있어요</h2>
+      <ul class="intro-list">
+        <li>16개의 문항으로 8체질 중 나와 가까운 체질 경향 추정</li>
+        <li>체질별 강한/약한 장기, 성격·체형 특징 요약</li>
+        <li>이로운 음식 / 피하면 좋은 음식 안내</li>
+        <li>생활 습관 주의사항</li>
+      </ul>
+    </div>
+
+    <div class="disclaimer">
+      <strong>안내</strong>
+      본 결과는 설문 기반 참고용 추정이며 의학적 진단이 아닙니다.
+      정확한 8체질 판별은 한의사의 맥진 등 전문 진료가 필요합니다.
+    </div>
+
+    <button class="btn btn-primary" id="btn-start">설문 시작하기</button>
+    <p style="text-align:center;color:var(--sub);font-size:0.8rem;margin-top:10px;">
+      약 2~3분 소요됩니다
+    </p>
+  </section>
+
+  <!-- ===================== 설문 화면 ===================== -->
+  <section class="screen" id="screen-quiz">
+    <div class="progress-wrap">
+      <div class="progress-track">
+        <div class="progress-fill" id="progress-fill"></div>
+      </div>
+      <div class="progress-label" id="progress-label">1 / 16</div>
+    </div>
+
+    <div class="card" style="flex:1;">
+      <span class="q-category" id="q-category">체형/골격</span>
+      <div class="q-text" id="q-text">질문 텍스트</div>
+      <div class="options" id="q-options"></div>
+    </div>
+
+    <div class="nav-row">
+      <button class="btn btn-ghost" id="btn-prev" style="flex:0 0 90px;">이전</button>
+      <button class="btn btn-primary" id="btn-next" style="flex:1;" disabled>다음</button>
+    </div>
+  </section>
+
+  <!-- ===================== 결과 화면 ===================== -->
+  <section class="screen" id="screen-result">
+    <div id="result-content"></div>
+
+    <div class="share-row">
+      <button class="btn btn-secondary" id="btn-save-image">결과 이미지 저장</button>
+      <button class="btn btn-secondary" id="btn-share-link">결과 링크 공유</button>
+    </div>
+    <button class="btn btn-ghost" id="btn-restart">다시 하기</button>
+
+    <div class="disclaimer" style="margin-top:20px;">
+      <strong>안내</strong>
+      본 결과는 설문 기반 참고용 추정이며 의학적 진단이 아닙니다.
+      정확한 8체질 판별은 한의사의 맥진 등 전문 진료가 필요합니다.
+    </div>
+  </section>
+
+  <footer class="app-footer">8체질 자가진단 · 참고용 도구</footer>
+</div>
+
+<canvas id="shareCanvas" width="800" height="1000"></canvas>
+
+<script>
+/* ======================================================================
+   8체질 자가진단 — 데이터 & 로직
+   ----------------------------------------------------------------------
+   이 파일은 빌드 과정 없이 index.html 하나로 동작하는 정적 웹앱입니다.
+
+   [설문 문항 수정 방법]
+   - 아래 QUESTIONS 배열의 각 항목을 수정/추가/삭제하면 됩니다.
+   - 각 문항은 { category, text, options: [...] } 형태입니다.
+   - 각 option은 { text, scores: { 체질키: 가중치, ... } } 형태입니다.
+     scores에 명시하지 않은 체질은 0점으로 처리됩니다.
+   - 체질 키는 CONSTITUTIONS 객체의 키(geumyang, geumeum, toyang, toeum,
+     mokyang, mokeum, suyang, sueum)와 반드시 일치해야 합니다.
+
+   [체질 정보 수정 방법]
+   - 아래 CONSTITUTIONS 객체에서 각 체질의 이름/장기/특징/음식/생활수칙을
+     수정하면 결과 화면에 바로 반영됩니다.
+
+   [판정 로직]
+   - 모든 문항의 점수를 체질별로 합산합니다.
+   - 총점이 가장 높은 체질을 1차 결과로 채택합니다.
+   - 1위와 2위 점수 차이가 작으면(임계값 CLOSE_SCORE_RATIO 이하) "OO체질에
+     가까우나 △△체질 성향도 있음"으로 안내합니다.
+   - 이 결과는 절대적 진단이 아니라 경향성 추정입니다. 실제 8체질 판별은
+     한의사의 맥진 등 전문적인 진료를 통해 이루어져야 합니다.
+   ====================================================================== */
+
+const CONSTITUTIONS = {
+  geumyang: {
+    nameKr: "금양체질", nameEn: "Pulmotonia",
+    strongOrgan: "폐(肺)", weakOrgan: "간(肝)",
+    summary: "결단력 있고 추진력이 강하며 할 말은 하는 직선적인 성향입니다. 어깨가 넓고 상체가 발달한 체형이 많고, 예민한 피부와 알레르기 반응을 보이는 경우가 흔합니다. 육류·기름진 음식·유제품·밀가루를 소화하기 어려워하는 편입니다.",
+    goodFoods: ["채소류(특히 잎채소)", "흰살 생선·해산물", "메밀", "포도·배 등 과일", "쌀밥"],
+    badFoods: ["소고기·돼지고기 등 육류", "우유·치즈 등 유제품", "밀가루 음식", "인스턴트·기름진 음식", "지나치게 자극적인 보양식"],
+    lifestyle: [
+      "격렬한 운동으로 땀을 많이 흘리는 것은 오히려 기운을 빠지게 할 수 있어 주의합니다.",
+      "고단백·고지방 육류 위주 식단은 간에 부담을 줄 수 있어 피합니다.",
+      "가벼운 스트레칭이나 산책처럼 과하지 않은 활동이 잘 맞습니다.",
+      "피부가 예민한 편이므로 자극적인 화장품·환경 변화에 주의합니다."
+    ]
+  },
+  geumeum: {
+    nameKr: "금음체질", nameEn: "Colonotonia",
+    strongOrgan: "대장(大腸)", weakOrgan: "담(膽)",
+    summary: "차분하고 분석적이며 냉정한 판단력을 가진 경우가 많습니다. 금양체질과 비슷하게 호리호리한 체형이 많고, 육류 중에서도 특히 닭고기에 부담을 느끼는 경우가 흔합니다. 소화기가 예민해 배탈이 잦을 수 있습니다.",
+    goodFoods: ["채소류", "해산물·생선", "메밀", "과일류", "콩류"],
+    badFoods: ["닭고기 등 가금류", "기름진 육류", "유제품", "자극적이고 매운 음식"],
+    lifestyle: [
+      "과도한 땀 배출보다는 가볍게 몸을 움직이는 정도가 적당합니다.",
+      "닭고기·기름진 음식을 특히 주의하는 것이 좋습니다.",
+      "장이 예민한 편이므로 규칙적인 식사 습관이 도움이 됩니다.",
+      "스트레스 관리와 충분한 휴식이 중요합니다."
+    ]
+  },
+  toyang: {
+    nameKr: "토양체질", nameEn: "Pancreotonia",
+    strongOrgan: "췌장(膵臟)", weakOrgan: "신장(腎臟)",
+    summary: "사교적이고 활발하며 화통한 성격으로 사람들과 잘 어울립니다. 성격이 급하고 열정적인 면이 있으며, 더위를 잘 견디지 못하는 경향이 있습니다. 소화력이 좋은 편이나 매운 음식이나 자극적인 음식에는 속이 쉽게 상합니다.",
+    goodFoods: ["돼지고기", "해산물·생선", "채소류", "찬 성질의 과일(참외, 배 등)"],
+    badFoods: ["닭고기", "맵고 자극적인 음식", "인삼 등 뜨거운 성질의 보양식", "지나치게 기름진 음식"],
+    lifestyle: [
+      "더운 환경이나 뜨거운 음식·보양식은 오히려 몸에 열을 더할 수 있어 주의합니다.",
+      "매운 음식을 즐기더라도 과하면 위장에 부담이 될 수 있습니다.",
+      "성격이 급한 편이라 화를 다스리는 마음 관리가 건강에 도움이 됩니다.",
+      "규칙적인 수분 섭취와 신장 기능 관리를 신경 쓰면 좋습니다."
+    ]
+  },
+  toeum: {
+    nameKr: "토음체질", nameEn: "Gastrotonia",
+    strongOrgan: "위(胃)", weakOrgan: "방광(膀胱)",
+    summary: "8체질 중 인구 비율이 매우 낮은 희소 체질로 알려져 있습니다. 위장 기능이 강해 소화력이 좋은 편이지만 신경성 위장 장애나 특정 약물·화학물질에 대한 알레르기 반응이 유독 잘 나타나는 경우가 있습니다. 토양체질과 여러 특징을 공유합니다.",
+    goodFoods: ["해산물·생선", "채소류", "담백한 음식"],
+    badFoods: ["맵고 자극적인 음식", "닭고기", "인공첨가물이 많은 가공식품", "특정 약물(개인 반응 확인 필요)"],
+    lifestyle: [
+      "약물이나 건강보조식품에 예민하게 반응할 수 있어 새로운 약 복용 시 특히 주의가 필요합니다.",
+      "맵고 자극적인 음식은 위장 장애를 유발하기 쉬워 피하는 것이 좋습니다.",
+      "희소 체질로 오진 가능성이 높은 편이라 전문가 상담이 특히 권장됩니다.",
+      "스트레스성 소화불량이 잦다면 규칙적인 식습관과 휴식이 도움이 됩니다."
+    ]
+  },
+  mokyang: {
+    nameKr: "목양체질", nameEn: "Hepatonia",
+    strongOrgan: "간(肝)", weakOrgan: "폐(肺)",
+    summary: "신중하고 인내심이 많으며 느긋한 성향을 가진 경우가 많습니다. 골격이 굵고 다부지며 살이 잘 붙는 체형이 흔합니다. 육류와 유제품 소화력이 좋은 편이며, 땀을 흘리는 것이 건강에 도움이 되는 체질로 알려져 있습니다.",
+    goodFoods: ["소고기·돼지고기 등 육류", "우유·치즈 등 유제품", "뿌리채소(당근, 무 등)", "곡류"],
+    badFoods: ["잎채소류(과다 섭취 시)", "해산물·생선", "찬 음식"],
+    lifestyle: [
+      "적절한 운동으로 땀을 흘리는 것이 건강 유지에 도움이 됩니다.",
+      "호흡기(폐)가 약한 편이므로 환절기 감기·기관지 관리에 신경 씁니다.",
+      "찬 음식보다는 따뜻한 음식을 위주로 섭취하는 것이 좋습니다.",
+      "과식하지 않도록 식사량 조절에 유의합니다."
+    ]
+  },
+  mokeum: {
+    nameKr: "목음체질", nameEn: "Cholecystonia",
+    strongOrgan: "담(膽)", weakOrgan: "대장(大腸)",
+    summary: "목양체질과 유사하게 사교적이고 여유로운 성격을 가진 경우가 많습니다. 육류와 유제품이 잘 맞는 편이며, 찬 음식을 먹으면 배탈이 나기 쉬운 경향이 있습니다. 전반적으로 무난한 소화력을 가진 경우가 많습니다.",
+    goodFoods: ["육류(소고기, 돼지고기)", "유제품", "따뜻한 곡류 음식", "뿌리채소"],
+    badFoods: ["찬 음식·찬 음료", "과도한 생선회 등 날음식", "기름지고 자극적인 음식"],
+    lifestyle: [
+      "찬 음식과 찬 음료는 장 트러블을 유발하기 쉬워 주의합니다.",
+      "적당한 운동과 규칙적인 생활 습관이 잘 맞습니다.",
+      "대장이 약한 편이므로 배를 따뜻하게 유지하는 것이 좋습니다.",
+      "과식이나 과음은 피하는 것이 좋습니다."
+    ]
+  },
+  suyang: {
+    nameKr: "수양체질", nameEn: "Renotonia",
+    strongOrgan: "신장(腎臟)", weakOrgan: "췌장(膵臟)",
+    summary: "차분하고 꼼꼼하며 계획적인 성향을 가진 경우가 많습니다. 상체보다 마른 체형이 흔하고, 추위를 잘 견디지 못하며 손발이 찬 경우가 많습니다. 소화력이 약한 편이라 찬 음식에 배탈이 잘 나는 경향이 있습니다.",
+    goodFoods: ["따뜻한 성질의 음식", "찹쌀·현미 등 곡류", "익힌 채소", "생강, 대파 등 따뜻한 향신 재료"],
+    badFoods: ["찬 음식·찬 음료·아이스크림", "밀가루 음식(과다 섭취)", "기름지고 소화가 어려운 음식"],
+    lifestyle: [
+      "찬 음식과 찬 기운에 노출되는 것을 피하고 몸을 따뜻하게 유지합니다.",
+      "췌장(소화) 기능이 약한 편이므로 과식을 피하고 천천히 먹는 습관이 좋습니다.",
+      "스트레스와 걱정이 많은 성향이라 마음의 여유를 갖는 것이 건강에 도움이 됩니다.",
+      "규칙적인 수면과 보온에 신경 쓰는 것이 좋습니다."
+    ]
+  },
+  sueum: {
+    nameKr: "수음체질", nameEn: "Vesicotonia",
+    strongOrgan: "방광(膀胱)", weakOrgan: "위(胃)",
+    summary: "8체질 중 소화기(위)가 가장 약한 편으로 알려져 있으며, 예민하고 세심한 성격을 가진 경우가 많습니다. 소식하는 편이 몸에 잘 맞고, 조금만 과식해도 체하거나 더부룩함을 느끼기 쉽습니다. 찬 음식과 돼지고기에 특히 약합니다.",
+    goodFoods: ["따뜻하게 조리한 음식", "닭고기", "찹쌀·현미 등 곡류", "익힌 채소"],
+    badFoods: ["찬 음식·찬 음료", "돼지고기", "밀가루 음식(과다 섭취)", "기름지고 소화가 어려운 음식"],
+    lifestyle: [
+      "위장이 약한 편이므로 소량씩 자주, 천천히 먹는 습관이 중요합니다.",
+      "찬 음식과 돼지고기는 소화 장애를 유발하기 쉬워 주의합니다.",
+      "몸을 따뜻하게 유지하고 과로를 피하는 것이 좋습니다.",
+      "예민한 성향으로 스트레스에 취약할 수 있어 마음의 안정이 중요합니다."
+    ]
+  }
+};
+
+const QUESTIONS = [
+  {
+    category: "체형/골격",
+    text: "본인의 체형과 가장 가까운 것은 무엇인가요?",
+    options: [
+      { text: "어깨가 넓고 상체가 발달했으며 하체는 비교적 약한 편", scores: { geumyang: 3, geumeum: 2 } },
+      { text: "골격이 굵고 다부지며 살이 잘 붙는 편", scores: { mokyang: 3, mokeum: 2 } },
+      { text: "통통하고 살집이 있으며 배가 나온 편", scores: { toyang: 3, toeum: 2 } },
+      { text: "전체적으로 마른 편이고 상체가 가는 편", scores: { suyang: 2, sueum: 3 } }
+    ]
+  },
+  {
+    category: "성격·기질",
+    text: "본인의 성격과 가장 가까운 것은 무엇인가요?",
+    options: [
+      { text: "결단력 있고 추진력이 강하며 할 말은 하는 편", scores: { geumyang: 3, geumeum: 3 } },
+      { text: "신중하고 인내심이 많으며 느긋한 편", scores: { mokyang: 3, mokeum: 2 } },
+      { text: "사교적이고 활발하며 화통한 편, 성격이 급함", scores: { toyang: 3, toeum: 3 } },
+      { text: "차분하고 꼼꼼하며 걱정이 많은 소심한 편", scores: { suyang: 3, sueum: 3 } }
+    ]
+  },
+  {
+    category: "소화력",
+    text: "평소 소화력은 어떤가요?",
+    options: [
+      { text: "아주 좋아서 뭐든 잘 먹고 잘 소화한다", scores: { toyang: 3, toeum: 2, mokyang: 1 } },
+      { text: "보통이지만 육류·유제품 등 특정 음식에는 약하다", scores: { geumyang: 2, geumeum: 2 } },
+      { text: "예민해서 조금만 먹어도 체하거나 더부룩하다", scores: { sueum: 3, suyang: 1 } },
+      { text: "평범한 편이고 소식하는 것이 몸에 편하다", scores: { suyang: 2, mokeum: 1 } }
+    ]
+  },
+  {
+    category: "특정 음식 반응 - 육류",
+    text: "고기(소고기, 돼지고기 등)를 먹으면 어떤가요?",
+    options: [
+      { text: "잘 맞고 힘이 나서 즐겨 먹는다", scores: { mokyang: 3, mokeum: 3 } },
+      { text: "먹으면 속이 더부룩하고 부담스럽다", scores: { geumyang: 3, geumeum: 2 } },
+      { text: "돼지고기는 괜찮으나 닭고기는 부담스럽다", scores: { toyang: 2, toeum: 2 } },
+      { text: "따뜻하게 조리한 닭고기 정도는 잘 맞는다", scores: { sueum: 3 } }
+    ]
+  },
+  {
+    category: "특정 음식 반응 - 유제품",
+    text: "우유, 치즈 등 유제품을 먹으면 어떤가요?",
+    options: [
+      { text: "잘 맞고 소화도 잘 되는 편이다", scores: { mokyang: 3, mokeum: 2 } },
+      { text: "속이 불편하거나 설사를 하는 편이다", scores: { geumyang: 2, suyang: 1, sueum: 1 } },
+      { text: "먹어도 그냥 그렇다, 크게 문제없다", scores: { toyang: 1, toeum: 1 } }
+    ]
+  },
+  {
+    category: "특정 음식 반응 - 밀가루",
+    text: "빵, 면 등 밀가루 음식을 자주 먹으면 어떤가요?",
+    options: [
+      { text: "자주 먹어도 별문제 없다", scores: { mokyang: 1, toyang: 1 } },
+      { text: "속이 더부룩하거나 몸이 붓는 느낌이 있다", scores: { geumyang: 3, geumeum: 2 } },
+      { text: "소화가 잘 안 되고 체하는 느낌이 있다", scores: { suyang: 1, sueum: 2 } }
+    ]
+  },
+  {
+    category: "특정 음식 반응 - 해산물",
+    text: "생선이나 해산물을 먹으면 어떤가요?",
+    options: [
+      { text: "잘 맞고 즐겨 먹는 편이다", scores: { geumyang: 3, geumeum: 3, toyang: 2, toeum: 3 } },
+      { text: "먹으면 속이 냉해지거나 탈이 나는 편이다", scores: { mokyang: 3, mokeum: 2 } }
+    ]
+  },
+  {
+    category: "특정 음식 반응 - 매운음식",
+    text: "매운 음식을 먹으면 어떤가요?",
+    options: [
+      { text: "잘 먹고 땀이 나면서 오히려 개운하다", scores: { mokyang: 1, suyang: 1 } },
+      { text: "속이 쓰리거나 다음날까지 부담스럽다", scores: { toyang: 3, toeum: 3 } },
+      { text: "무난하게 먹는 편이다", scores: { geumyang: 1, geumeum: 1 } }
+    ]
+  },
+  {
+    category: "특정 음식 반응 - 찬음식",
+    text: "냉면, 아이스크림 등 찬 음식을 먹으면 어떤가요?",
+    options: [
+      { text: "배가 아프거나 설사를 하기 쉽다", scores: { suyang: 3, sueum: 3, mokeum: 1 } },
+      { text: "크게 상관없다, 오히려 시원해서 좋다", scores: { geumyang: 2, toyang: 2 } }
+    ]
+  },
+  {
+    category: "땀 배출",
+    text: "땀 배출에 대해 어떻게 느끼나요?",
+    options: [
+      { text: "땀을 흘리고 나면 몸이 가볍고 개운하다", scores: { mokyang: 3, mokeum: 2 } },
+      { text: "땀을 많이 흘리면 오히려 기운이 빠지고 힘들다", scores: { geumyang: 3, geumeum: 2 } },
+      { text: "땀이 별로 안 나는 편이다", scores: { suyang: 2, sueum: 2 } },
+      { text: "땀이 나면 나는대로, 크게 신경 쓰지 않는다", scores: { toyang: 1, toeum: 1 } }
+    ]
+  },
+  {
+    category: "추위·더위 민감도",
+    text: "추위와 더위 중 어느 쪽을 더 못 견디나요?",
+    options: [
+      { text: "더위를 잘 못 견딘다, 더운 게 힘들다", scores: { toyang: 2, mokyang: 1 } },
+      { text: "추위를 잘 못 견딘다, 손발이 찬 편이다", scores: { suyang: 3, sueum: 3, geumyang: 1 } },
+      { text: "둘 다 크게 상관없는 편이다", scores: { geumeum: 1, mokeum: 1 } }
+    ]
+  },
+  {
+    category: "대소변",
+    text: "평소 대변 상태는 어떤가요?",
+    options: [
+      { text: "대변이 묽거나 설사를 자주 하는 편이다", scores: { geumeum: 2, sueum: 2 } },
+      { text: "변비가 있는 편이다", scores: { mokyang: 2, toeum: 1 } },
+      { text: "규칙적이고 무난한 편이다", scores: { toyang: 2, mokeum: 1 } }
+    ]
+  },
+  {
+    category: "피부",
+    text: "본인의 피부 상태와 가장 가까운 것은?",
+    options: [
+      { text: "건조하고 예민하며 알레르기가 잘 생긴다", scores: { geumyang: 3, toeum: 2 } },
+      { text: "기름지고 트러블이 잘 생기는 편이다", scores: { toyang: 2, mokeum: 1 } },
+      { text: "두껍고 튼튼한 편, 잘 트지 않는다", scores: { mokyang: 2, suyang: 1 } },
+      { text: "얇고 하얀 편, 쉽게 붉어진다", scores: { sueum: 2, geumeum: 1 } }
+    ]
+  },
+  {
+    category: "약물·알레르기 반응",
+    text: "약물이나 특정 물질에 대한 알레르기 반응이 잘 나타나나요?",
+    options: [
+      { text: "매우 예민해서 약을 먹으면 부작용이 잘 생긴다", scores: { toeum: 4, geumyang: 1 } },
+      { text: "가끔 그런 편이다", scores: { geumyang: 1, geumeum: 1, toeum: 1 } },
+      { text: "보통이다, 크게 문제없는 편이다", scores: { mokyang: 1, toyang: 1, suyang: 1, sueum: 1 } }
+    ]
+  },
+  {
+    category: "활동 스타일",
+    text: "평소 활동/생활 스타일과 가장 가까운 것은?",
+    options: [
+      { text: "몸을 움직이고 운동하는 것을 좋아한다, 활동적이다", scores: { mokyang: 2, toyang: 2 } },
+      { text: "차분히 앉아서 하는 일을 좋아한다, 정적인 편이다", scores: { suyang: 2, geumeum: 1 } },
+      { text: "사람을 만나고 대화하는 것을 좋아한다", scores: { toyang: 2, toeum: 2 } },
+      { text: "혼자 있는 시간을 좋아하고 분석적인 활동을 즐긴다", scores: { geumyang: 2, sueum: 1 } }
+    ]
+  },
+  {
+    category: "물/음료 온도 선호",
+    text: "물을 마실 때 선호하는 온도는?",
+    options: [
+      { text: "시원하거나 찬물이 좋다", scores: { geumyang: 2, toyang: 2 } },
+      { text: "따뜻한 물이나 뜨거운 물이 편하다", scores: { suyang: 3, sueum: 3, mokeum: 1 } }
+    ]
+  }
+];
+
+/* 1위-2위 점수 차이가 1위 점수의 이 비율 이하이면 "가까움" 안내 문구를 보여줍니다. */
+const CLOSE_SCORE_RATIO = 0.18;
+
+/* ======================================================================
+   상태 & 화면 전환
+   ====================================================================== */
+let currentIndex = 0;
+const answers = new Array(QUESTIONS.length).fill(null); // 선택한 옵션 인덱스
+
+const screens = {
+  intro: document.getElementById('screen-intro'),
+  quiz: document.getElementById('screen-quiz'),
+  result: document.getElementById('screen-result')
+};
+
+function showScreen(name){
+  Object.values(screens).forEach(s => s.classList.remove('active'));
+  screens[name].classList.add('active');
+  window.scrollTo(0,0);
+}
+
+document.getElementById('btn-start').addEventListener('click', () => {
+  currentIndex = 0;
+  answers.fill(null);
+  renderQuestion();
+  showScreen('quiz');
+});
+
+document.getElementById('btn-restart').addEventListener('click', () => {
+  showScreen('intro');
+});
+
+/* ======================================================================
+   설문 렌더링
+   ====================================================================== */
+function renderQuestion(){
+  const q = QUESTIONS[currentIndex];
+  document.getElementById('q-category').textContent = q.category;
+  document.getElementById('q-text').textContent = q.text;
+
+  const optionsEl = document.getElementById('q-options');
+  optionsEl.innerHTML = '';
+  q.options.forEach((opt, i) => {
+    const div = document.createElement('div');
+    div.className = 'option' + (answers[currentIndex] === i ? ' selected' : '');
+    div.textContent = opt.text;
+    div.addEventListener('click', () => selectOption(i));
+    optionsEl.appendChild(div);
+  });
+
+  const pct = Math.round((currentIndex) / QUESTIONS.length * 100);
+  document.getElementById('progress-fill').style.width = pct + '%';
+  document.getElementById('progress-label').textContent = `${currentIndex + 1} / ${QUESTIONS.length}`;
+
+  document.getElementById('btn-prev').disabled = currentIndex === 0;
+  document.getElementById('btn-prev').style.opacity = currentIndex === 0 ? 0.4 : 1;
+
+  const nextBtn = document.getElementById('btn-next');
+  nextBtn.disabled = answers[currentIndex] === null;
+  nextBtn.textContent = currentIndex === QUESTIONS.length - 1 ? '결과 보기' : '다음';
+}
+
+function selectOption(i){
+  answers[currentIndex] = i;
+  renderQuestion();
+}
+
+document.getElementById('btn-prev').addEventListener('click', () => {
+  if (currentIndex > 0){
+    currentIndex -= 1;
+    renderQuestion();
+  }
+});
+
+document.getElementById('btn-next').addEventListener('click', () => {
+  if (answers[currentIndex] === null) return;
+  if (currentIndex < QUESTIONS.length - 1){
+    currentIndex += 1;
+    renderQuestion();
+  } else {
+    const result = computeResult(answers);
+    renderResult(result);
+    showScreen('result');
+  }
+});
+
+/* ======================================================================
+   스코어링 로직
+   ====================================================================== */
+function computeResult(answerIndexes){
+  const totals = {};
+  Object.keys(CONSTITUTIONS).forEach(k => totals[k] = 0);
+
+  answerIndexes.forEach((optIndex, qIndex) => {
+    if (optIndex === null) return;
+    const scores = QUESTIONS[qIndex].options[optIndex].scores || {};
+    Object.keys(scores).forEach(k => {
+      totals[k] = (totals[k] || 0) + scores[k];
+    });
+  });
+
+  const ranked = Object.keys(totals)
+    .map(k => ({ key: k, score: totals[k] }))
+    .sort((a, b) => b.score - a.score);
+
+  const top = ranked[0];
+  const second = ranked[1];
+  const isClose = top.score > 0 &&
+    (top.score - second.score) <= top.score * CLOSE_SCORE_RATIO;
+
+  return { totals, ranked, top, second, isClose };
+}
+
+/* ======================================================================
+   결과 렌더링
+   ====================================================================== */
+function renderResult(result){
+  const topType = CONSTITUTIONS[result.top.key];
+  const secondType = CONSTITUTIONS[result.second.key];
+
+  let html = '';
+
+  html += `
+    <div class="result-hero">
+      <div class="type-en">${topType.nameEn}</div>
+      <div class="type-kr">${topType.nameKr}</div>
+      <div class="organ-tags">
+        <span class="organ-tag strong">강한 장기 · ${topType.strongOrgan}</span>
+        <span class="organ-tag weak">약한 장기 · ${topType.weakOrgan}</span>
+      </div>
+    </div>
+  `;
+
+  if (result.isClose){
+    html += `
+      <div class="near-note">
+        ${topType.nameKr}에 가까우나, <strong>${secondType.nameKr}</strong> 성향도 함께 나타납니다.
+        경향성 추정 결과이니 참고용으로 확인해주세요.
+      </div>
+    `;
+  }
+
+  html += `
+    <div class="card">
+      <h2>체질 특성</h2>
+      <p>${topType.summary}</p>
+    </div>
+  `;
+
+  html += `
+    <div class="section-title">음식 안내</div>
+    <div class="food-grid">
+      <div class="food-box good">
+        <h3>이로운 음식</h3>
+        <ul>${topType.goodFoods.map(f => `<li>${f}</li>`).join('')}</ul>
+      </div>
+      <div class="food-box bad">
+        <h3>피하면 좋은 음식</h3>
+        <ul>${topType.badFoods.map(f => `<li>${f}</li>`).join('')}</ul>
+      </div>
+    </div>
+  `;
+
+  html += `
+    <div class="section-title">생활 주의사항</div>
+    <div class="card">
+      <ul class="lifestyle-list">
+        ${topType.lifestyle.map(l => `<li>${l}</li>`).join('')}
+      </ul>
+    </div>
+  `;
+
+  html += `
+    <div class="score-detail">
+      전체 점수: ${result.ranked.map(r => `${CONSTITUTIONS[r.key].nameKr} ${r.score}점`).join(' · ')}
+    </div>
+  `;
+
+  document.getElementById('result-content').innerHTML = html;
+
+  // 공유/저장 버튼에서 사용할 현재 결과 캐싱
+  window.__lastResult = result;
+}
+
+/* ======================================================================
+   결과 이미지로 저장 (외부 라이브러리 없이 Canvas로 직접 그림)
+   ====================================================================== */
+document.getElementById('btn-save-image').addEventListener('click', () => {
+  const result = window.__lastResult;
+  if (!result) return;
+  const type = CONSTITUTIONS[result.top.key];
+
+  const canvas = document.getElementById('shareCanvas');
+  const ctx = canvas.getContext('2d');
+  const W = canvas.width, H = canvas.height;
+
+  // 배경
+  const grad = ctx.createLinearGradient(0, 0, 0, H);
+  grad.addColorStop(0, '#fbf3e9');
+  grad.addColorStop(1, '#f6f4ef');
+  ctx.fillStyle = grad;
+  ctx.fillRect(0, 0, W, H);
+
+  ctx.textAlign = 'center';
+
+  ctx.fillStyle = '#6b6960';
+  ctx.font = '24px "Malgun Gothic", sans-serif';
+  ctx.fillText(type.nameEn, W / 2, 110);
+
+  ctx.fillStyle = '#5c4726';
+  ctx.font = 'bold 56px "Malgun Gothic", sans-serif';
+  ctx.fillText(type.nameKr, W / 2, 180);
+
+  ctx.font = '22px "Malgun Gothic", sans-serif';
+  ctx.fillStyle = '#2f6d3c';
+  ctx.fillText(`강한 장기 · ${type.strongOrgan}`, W / 2, 230);
+  ctx.fillStyle = '#b3452f';
+  ctx.fillText(`약한 장기 · ${type.weakOrgan}`, W / 2, 265);
+
+  ctx.textAlign = 'left';
+  ctx.fillStyle = '#2b2b28';
+  ctx.font = '20px "Malgun Gothic", sans-serif';
+  wrapText(ctx, type.summary, 60, 330, W - 120, 32);
+
+  let y = 480;
+  ctx.font = 'bold 24px "Malgun Gothic", sans-serif';
+  ctx.fillStyle = '#2f6d3c';
+  ctx.fillText('이로운 음식', 60, y);
+  ctx.font = '20px "Malgun Gothic", sans-serif';
+  ctx.fillStyle = '#2b2b28';
+  type.goodFoods.forEach((f, i) => {
+    ctx.fillText('· ' + f, 60, y + 36 + i * 30);
+  });
+
+  y = 480;
+  ctx.font = 'bold 24px "Malgun Gothic", sans-serif';
+  ctx.fillStyle = '#b3452f';
+  ctx.fillText('피하면 좋은 음식', W / 2 + 20, y);
+  ctx.font = '20px "Malgun Gothic", sans-serif';
+  ctx.fillStyle = '#2b2b28';
+  type.badFoods.forEach((f, i) => {
+    ctx.fillText('· ' + f, W / 2 + 20, y + 36 + i * 30);
+  });
+
+  ctx.textAlign = 'center';
+  ctx.font = '16px "Malgun Gothic", sans-serif';
+  ctx.fillStyle = '#6b6960';
+  wrapText(ctx, '본 결과는 설문 기반 참고용 추정이며 의학적 진단이 아닙니다. 정확한 8체질 판별은 한의사의 맥진 등 전문 진료가 필요합니다.', W / 2, H - 90, W - 120, 24, true);
+
+  ctx.font = '14px "Malgun Gothic", sans-serif';
+  ctx.fillStyle = '#8a6d3b';
+  ctx.fillText('8체질 자가진단 · 참고용 도구', W / 2, H - 30);
+
+  const link = document.createElement('a');
+  link.download = `${type.nameKr}_결과.png`;
+  link.href = canvas.toDataURL('image/png');
+  link.click();
+});
+
+function wrapText(ctx, text, x, y, maxWidth, lineHeight, centered){
+  const words = text.split('');
+  let line = '';
+  let curY = y;
+  const align = centered ? 'center' : 'left';
+  ctx.textAlign = align;
+  for (let i = 0; i < words.length; i++){
+    const testLine = line + words[i];
+    if (ctx.measureText(testLine).width > maxWidth && line.length > 0){
+      ctx.fillText(line, x, curY);
+      line = words[i];
+      curY += lineHeight;
+    } else {
+      line = testLine;
+    }
+  }
+  ctx.fillText(line, x, curY);
+}
+
+/* ======================================================================
+   결과 링크 공유
+   - 사용자의 답변을 URL 쿼리스트링(base64)에 담아 공유합니다.
+   - 링크로 접속하면 자동으로 같은 결과가 재계산되어 표시됩니다.
+   ====================================================================== */
+document.getElementById('btn-share-link').addEventListener('click', async () => {
+  const result = window.__lastResult;
+  if (!result) return;
+  const type = CONSTITUTIONS[result.top.key];
+
+  const encoded = encodeAnswers(answers);
+  const url = `${location.origin}${location.pathname}?a=${encoded}`;
+  const shareText = `저의 8체질 자가진단 결과는 "${type.nameKr}(${type.nameEn})"입니다. (참고용 추정 결과)`;
+
+  if (navigator.share){
+    try {
+      await navigator.share({ title: '8체질 자가진단 결과', text: shareText, url });
+      return;
+    } catch (e) {
+      // 사용자가 취소한 경우 등은 무시하고 클립보드 복사로 대체
+    }
+  }
+
+  try {
+    await navigator.clipboard.writeText(`${shareText}\n${url}`);
+    alert('결과 링크가 클립보드에 복사되었습니다.');
+  } catch (e) {
+    alert(url);
+  }
+});
+
+function encodeAnswers(arr){
+  // null은 -1로 치환 후 문자열화, base64로 인코딩 (URL-safe)
+  const raw = arr.map(v => v === null ? -1 : v).join(',');
+  return btoa(raw).replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
+}
+
+function decodeAnswers(str){
+  try {
+    const base64 = str.replace(/-/g, '+').replace(/_/g, '/');
+    const raw = atob(base64);
+    return raw.split(',').map(v => {
+      const n = parseInt(v, 10);
+      return n === -1 ? null : n;
+    });
+  } catch (e) {
+    return null;
+  }
+}
+
+/* 공유 링크로 접속한 경우 자동으로 결과 화면 표시 */
+(function initFromShareLink(){
+  const params = new URLSearchParams(location.search);
+  const a = params.get('a');
+  if (!a) return;
+  const decoded = decodeAnswers(a);
+  if (!decoded || decoded.length !== QUESTIONS.length) return;
+  if (decoded.some(v => v === null)) return;
+
+  decoded.forEach((v, i) => answers[i] = v);
+  const result = computeResult(answers);
+  renderResult(result);
+  showScreen('result');
+})();
+</script>
+</body>
+</html>
