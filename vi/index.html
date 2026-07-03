@@ -1,0 +1,963 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1, user-scalable=no">
+<title>Trắc nghiệm 8 Thể Chất (Tham khảo)</title>
+<style>
+  :root{
+    --bg:#f6f4ef;
+    --card:#ffffff;
+    --ink:#2b2b28;
+    --sub:#6b6960;
+    --line:#e6e2d8;
+    --accent:#8a6d3b;
+    --accent-strong:#5c4726;
+    --danger:#b3452f;
+    --radius:16px;
+    --shadow:0 4px 18px rgba(0,0,0,0.06);
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    background:var(--bg);
+    color:var(--ink);
+    font-family:"Segoe UI","Noto Sans","Roboto",-apple-system,BlinkMacSystemFont,sans-serif;
+    line-height:1.55;
+    min-height:100vh;
+    -webkit-font-smoothing:antialiased;
+  }
+  #app{
+    max-width:520px;
+    margin:0 auto;
+    min-height:100vh;
+    padding:24px 20px 48px;
+    display:flex;
+    flex-direction:column;
+  }
+  .screen{display:none;flex-direction:column;flex:1;}
+  .screen.active{display:flex;}
+
+  h1{font-size:1.5rem;margin:0 0 8px;color:var(--accent-strong);}
+  h2{font-size:1.25rem;margin:0 0 6px;}
+  h3{font-size:1.05rem;margin:0 0 4px;}
+  p{margin:0 0 12px;}
+
+  .card{
+    background:var(--card);
+    border-radius:var(--radius);
+    box-shadow:var(--shadow);
+    padding:20px;
+    margin-bottom:16px;
+    border:1px solid var(--line);
+  }
+
+  .disclaimer{
+    background:#fbf3e9;
+    border:1px solid #e9d8bb;
+    border-radius:12px;
+    padding:14px 16px;
+    font-size:0.85rem;
+    color:#6b5636;
+    margin-bottom:20px;
+  }
+  .disclaimer strong{display:block;margin-bottom:4px;color:#5c4726;}
+
+  .btn{
+    display:block;
+    width:100%;
+    text-align:center;
+    padding:15px 18px;
+    border-radius:12px;
+    border:none;
+    font-size:1rem;
+    font-weight:600;
+    cursor:pointer;
+    transition:transform .06s ease, opacity .15s ease;
+    -webkit-tap-highlight-color:transparent;
+  }
+  .btn:active{transform:scale(0.98);}
+  .btn-primary{
+    background:var(--accent-strong);
+    color:#fff;
+  }
+  .btn-secondary{
+    background:#fff;
+    color:var(--accent-strong);
+    border:1px solid var(--accent-strong);
+    margin-top:10px;
+  }
+  .btn-ghost{
+    background:transparent;
+    color:var(--sub);
+    border:1px solid var(--line);
+    margin-top:10px;
+  }
+
+  .intro-list{
+    font-size:0.92rem;
+    color:var(--sub);
+    padding-left:1.1em;
+    margin:0 0 4px;
+  }
+  .intro-list li{margin-bottom:4px;}
+
+  /* progress */
+  .progress-wrap{margin-bottom:18px;}
+  .progress-track{
+    height:8px;
+    background:var(--line);
+    border-radius:6px;
+    overflow:hidden;
+  }
+  .progress-fill{
+    height:100%;
+    background:var(--accent);
+    border-radius:6px;
+    transition:width .25s ease;
+    width:0%;
+  }
+  .progress-label{
+    font-size:0.8rem;
+    color:var(--sub);
+    margin-top:6px;
+    text-align:right;
+  }
+
+  .q-category{
+    display:inline-block;
+    font-size:0.75rem;
+    color:var(--accent-strong);
+    background:#f1e9da;
+    padding:3px 10px;
+    border-radius:999px;
+    margin-bottom:10px;
+    font-weight:600;
+  }
+  .q-text{font-size:1.15rem;font-weight:700;margin-bottom:18px;}
+
+  .options{display:flex;flex-direction:column;gap:10px;}
+  .option{
+    text-align:left;
+    padding:14px 16px;
+    border-radius:12px;
+    border:1.5px solid var(--line);
+    background:#fff;
+    font-size:0.98rem;
+    cursor:pointer;
+    transition:border-color .12s ease, background .12s ease;
+  }
+  .option:hover{border-color:var(--accent);}
+  .option.selected{
+    border-color:var(--accent-strong);
+    background:#f6efe2;
+  }
+
+  .nav-row{display:flex;gap:10px;margin-top:20px;}
+  .nav-row .btn{margin-top:0;}
+
+  /* result */
+  .result-hero{
+    text-align:center;
+    padding:28px 20px;
+    background:linear-gradient(160deg,#fbf3e9,#f6efe2);
+    border-radius:var(--radius);
+    margin-bottom:16px;
+    border:1px solid var(--line);
+  }
+  .result-hero .type-en{
+    color:var(--sub);
+    font-size:0.85rem;
+    letter-spacing:0.03em;
+    margin-bottom:6px;
+  }
+  .result-hero .type-kr{
+    font-size:1.8rem;
+    font-weight:800;
+    color:var(--accent-strong);
+    margin-bottom:10px;
+  }
+  .organ-tags{
+    display:flex;
+    justify-content:center;
+    gap:8px;
+    flex-wrap:wrap;
+  }
+  .organ-tag{
+    font-size:0.8rem;
+    padding:5px 12px;
+    border-radius:999px;
+    background:#fff;
+    border:1px solid var(--line);
+  }
+  .organ-tag.strong{color:#2f6d3c;border-color:#bfe0c6;background:#eef8ef;}
+  .organ-tag.weak{color:var(--danger);border-color:#e6c3b8;background:#fbeee9;}
+
+  .near-note{
+    font-size:0.85rem;
+    color:var(--accent-strong);
+    background:#f1e9da;
+    border-radius:10px;
+    padding:10px 12px;
+    margin-bottom:16px;
+  }
+
+  .food-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+  .food-box{
+    border-radius:12px;
+    padding:14px;
+    border:1px solid var(--line);
+  }
+  .food-box.good{background:#eef8ef;border-color:#cfe9d3;}
+  .food-box.bad{background:#fbeee9;border-color:#eecfc2;}
+  .food-box h3{font-size:0.9rem;margin-bottom:8px;}
+  .food-box.good h3{color:#2f6d3c;}
+  .food-box.bad h3{color:var(--danger);}
+  .food-box ul{margin:0;padding-left:1.1em;font-size:0.88rem;}
+  .food-box li{margin-bottom:4px;}
+
+  .section-title{
+    font-size:0.95rem;
+    font-weight:700;
+    margin:22px 0 10px;
+    color:var(--accent-strong);
+  }
+
+  .lifestyle-list{padding-left:1.2em;font-size:0.92rem;margin:0;}
+  .lifestyle-list li{margin-bottom:6px;}
+
+  .score-detail{
+    font-size:0.78rem;
+    color:var(--sub);
+    margin-top:6px;
+  }
+
+  .share-row{display:flex;gap:10px;margin-top:6px;}
+  .share-row .btn{flex:1;margin-top:0;}
+
+  #shareCanvas{display:none;}
+
+  .lang-switch{
+    text-align:center;
+    font-size:0.8rem;
+    margin-top:10px;
+  }
+  .lang-switch a{color:var(--accent);text-decoration:none;}
+  .lang-switch a:hover{text-decoration:underline;}
+
+  footer.app-footer{
+    text-align:center;
+    font-size:0.75rem;
+    color:var(--sub);
+    margin-top:24px;
+  }
+
+  @media (max-width:380px){
+    .food-grid{grid-template-columns:1fr;}
+  }
+</style>
+</head>
+<body>
+<div id="app">
+
+  <!-- ===================== Màn hình bắt đầu ===================== -->
+  <section class="screen active" id="screen-intro">
+    <h1>Trắc nghiệm 8 Thể Chất</h1>
+    <p style="color:var(--sub);">Thực hiện khảo sát đơn giản để tìm hiểu xu hướng thể chất của bạn.</p>
+
+    <div class="card">
+      <h2 style="margin-bottom:10px;">Bạn sẽ biết được gì</h2>
+      <ul class="intro-list">
+        <li>16 câu hỏi giúp ước tính thể chất gần nhất trong 8 thể chất</li>
+        <li>Tóm tắt tạng phủ mạnh/yếu, đặc điểm tính cách và thể hình theo từng thể chất</li>
+        <li>Hướng dẫn thực phẩm có lợi / nên tránh</li>
+        <li>Lưu ý trong sinh hoạt hằng ngày</li>
+      </ul>
+    </div>
+
+    <div class="disclaimer">
+      <strong>Lưu ý</strong>
+      Kết quả này chỉ là ước tính tham khảo dựa trên khảo sát, không phải chẩn đoán y khoa.
+      Để xác định chính xác 8 thể chất, cần được bác sĩ Đông y chẩn mạch và thăm khám chuyên môn.
+    </div>
+
+    <button class="btn btn-primary" id="btn-start">Bắt đầu khảo sát</button>
+    <p style="text-align:center;color:var(--sub);font-size:0.8rem;margin-top:10px;">
+      Mất khoảng 2~3 phút
+    </p>
+    <div class="lang-switch"><a href="../index.html">🇰🇷 한국어로 보기</a></div>
+  </section>
+
+  <!-- ===================== Màn hình khảo sát ===================== -->
+  <section class="screen" id="screen-quiz">
+    <div class="progress-wrap">
+      <div class="progress-track">
+        <div class="progress-fill" id="progress-fill"></div>
+      </div>
+      <div class="progress-label" id="progress-label">1 / 16</div>
+    </div>
+
+    <div class="card" style="flex:1;">
+      <span class="q-category" id="q-category">Thể hình / Khung xương</span>
+      <div class="q-text" id="q-text">Nội dung câu hỏi</div>
+      <div class="options" id="q-options"></div>
+    </div>
+
+    <div class="nav-row">
+      <button class="btn btn-ghost" id="btn-prev" style="flex:0 0 90px;">Trước</button>
+      <button class="btn btn-primary" id="btn-next" style="flex:1;" disabled>Tiếp theo</button>
+    </div>
+  </section>
+
+  <!-- ===================== Màn hình kết quả ===================== -->
+  <section class="screen" id="screen-result">
+    <div id="result-content"></div>
+
+    <div class="share-row">
+      <button class="btn btn-secondary" id="btn-save-image">Lưu ảnh kết quả</button>
+      <button class="btn btn-secondary" id="btn-share-link">Chia sẻ liên kết</button>
+    </div>
+    <button class="btn btn-ghost" id="btn-restart">Làm lại</button>
+
+    <div class="disclaimer" style="margin-top:20px;">
+      <strong>Lưu ý</strong>
+      Kết quả này chỉ là ước tính tham khảo dựa trên khảo sát, không phải chẩn đoán y khoa.
+      Để xác định chính xác 8 thể chất, cần được bác sĩ Đông y chẩn mạch và thăm khám chuyên môn.
+    </div>
+  </section>
+
+  <footer class="app-footer">Trắc nghiệm 8 Thể Chất · Công cụ tham khảo</footer>
+</div>
+
+<canvas id="shareCanvas" width="800" height="1000"></canvas>
+
+<script>
+/* ======================================================================
+   Trắc nghiệm 8 Thể Chất — Dữ liệu & logic (bản tiếng Việt)
+   ----------------------------------------------------------------------
+   Đây là bản dịch tiếng Việt của index.html gốc (tiếng Hàn). Logic chấm
+   điểm và cấu trúc mã nguồn hoàn toàn giống bản gốc, chỉ khác nội dung
+   hiển thị.
+
+   [Cách chỉnh sửa câu hỏi]
+   - Sửa/thêm/xóa các phần tử trong mảng QUESTIONS bên dưới.
+   - Mỗi câu hỏi có dạng { category, text, options: [...] }.
+   - Mỗi option có dạng { text, scores: { khóa_thể_chất: trọng_số, ... } }.
+     Thể chất không được liệt kê trong scores sẽ được tính là 0 điểm.
+   - Khóa thể chất phải trùng với khóa trong đối tượng CONSTITUTIONS
+     (geumyang, geumeum, toyang, toeum, mokyang, mokeum, suyang, sueum).
+
+   [Cách chỉnh sửa dữ liệu thể chất]
+   - Sửa nội dung trong đối tượng CONSTITUTIONS bên dưới (tên, tạng phủ,
+     đặc điểm, thực phẩm, lưu ý sinh hoạt) để cập nhật màn hình kết quả.
+
+   [Logic phán đoán]
+   - Tổng điểm của từng thể chất được cộng dồn từ tất cả các câu hỏi.
+   - Thể chất có tổng điểm cao nhất được chọn làm kết quả chính.
+   - Nếu chênh lệch điểm giữa hạng 1 và hạng 2 nhỏ (dưới ngưỡng
+     CLOSE_SCORE_RATIO), sẽ hiển thị thông báo "gần với thể chất A nhưng
+     cũng có xu hướng của thể chất B".
+   - Đây là kết quả ước tính mang tính xu hướng, không phải chẩn đoán
+     tuyệt đối. Việc xác định chính xác 8 thể chất cần bác sĩ Đông y
+     chẩn mạch và thăm khám chuyên môn.
+   ====================================================================== */
+
+const CONSTITUTIONS = {
+  geumyang: {
+    nameKr: "Kim Dương", nameEn: "Pulmotonia",
+    strongOrgan: "Phổi", weakOrgan: "Gan",
+    summary: "Người quyết đoán, có động lực hành động mạnh mẽ và thẳng thắn nói ra suy nghĩ của mình. Thường có vai rộng, phần thân trên phát triển; da nhạy cảm và dễ bị dị ứng. Khó tiêu hóa thịt, thực phẩm nhiều dầu mỡ, sữa và bột mì.",
+    goodFoods: ["Rau xanh (đặc biệt rau lá)", "Cá thịt trắng và hải sản", "Kiều mạch (tam giác mạch)", "Trái cây như nho, lê", "Cơm gạo trắng"],
+    badFoods: ["Thịt bò, thịt heo", "Sữa, phô mai và chế phẩm từ sữa", "Thực phẩm làm từ bột mì", "Đồ ăn nhanh, nhiều dầu mỡ", "Món bồi bổ có tính kích thích quá mạnh"],
+    lifestyle: [
+      "Vận động mạnh, ra nhiều mồ hôi có thể khiến cơ thể mệt mỏi hơn, nên hạn chế.",
+      "Chế độ ăn nhiều đạm, nhiều chất béo động vật có thể gây áp lực cho gan.",
+      "Các hoạt động nhẹ nhàng như giãn cơ, đi bộ sẽ phù hợp hơn.",
+      "Da nhạy cảm nên cần thận trọng với mỹ phẩm gây kích ứng và thay đổi môi trường."
+    ]
+  },
+  geumeum: {
+    nameKr: "Kim Âm", nameEn: "Colonotonia",
+    strongOrgan: "Đại tràng", weakOrgan: "Túi mật (Đởm)",
+    summary: "Thường điềm tĩnh, có khả năng phân tích và phán đoán lý trí. Thể hình mảnh khảnh giống thể Kim Dương, đặc biệt khó tiêu hóa thịt gia cầm (thịt gà). Hệ tiêu hóa nhạy cảm, dễ bị rối loạn tiêu hóa.",
+    goodFoods: ["Rau xanh", "Hải sản, cá", "Kiều mạch", "Trái cây", "Các loại đậu"],
+    badFoods: ["Thịt gia cầm (gà, vịt)", "Thịt nhiều mỡ", "Sữa và chế phẩm từ sữa", "Món ăn cay, kích thích"],
+    lifestyle: [
+      "Nên vận động nhẹ nhàng thay vì ra nhiều mồ hôi.",
+      "Đặc biệt cần chú ý với thịt gà và món ăn nhiều dầu mỡ.",
+      "Hệ tiêu hóa nhạy cảm nên ăn uống đúng giờ, điều độ sẽ có lợi.",
+      "Quản lý căng thẳng và nghỉ ngơi đầy đủ rất quan trọng."
+    ]
+  },
+  toyang: {
+    nameKr: "Thổ Dương", nameEn: "Pancreotonia",
+    strongOrgan: "Tụy", weakOrgan: "Thận",
+    summary: "Tính cách hòa đồng, năng động, cởi mở, dễ kết bạn. Có phần nóng tính, nhiệt huyết, và không chịu được nóng tốt. Tiêu hóa tốt nhưng dạ dày dễ bị tổn thương bởi món ăn cay hoặc kích thích.",
+    goodFoods: ["Thịt heo", "Hải sản, cá", "Rau xanh", "Trái cây tính mát (dưa lê, lê)"],
+    badFoods: ["Thịt gà", "Món ăn cay, kích thích", "Món bồi bổ có tính nóng như nhân sâm", "Đồ ăn quá nhiều dầu mỡ"],
+    lifestyle: [
+      "Môi trường nóng bức hoặc món ăn/bồi bổ có tính nóng có thể khiến cơ thể thêm nhiệt, cần thận trọng.",
+      "Dù thích ăn cay, ăn quá nhiều có thể gây áp lực cho dạ dày.",
+      "Tính khí nóng vội nên việc quản lý cảm xúc, giữ bình tĩnh có lợi cho sức khỏe.",
+      "Uống đủ nước đều đặn và chú ý chăm sóc chức năng thận."
+    ]
+  },
+  toeum: {
+    nameKr: "Thổ Âm", nameEn: "Gastrotonia",
+    strongOrgan: "Dạ dày", weakOrgan: "Bàng quang",
+    summary: "Là thể chất hiếm gặp nhất trong 8 thể chất. Chức năng dạ dày mạnh nên tiêu hóa tốt, nhưng dễ bị rối loạn tiêu hóa do căng thẳng và đặc biệt nhạy cảm với một số loại thuốc hoặc hóa chất. Có nhiều đặc điểm tương đồng với thể Thổ Dương.",
+    goodFoods: ["Hải sản, cá", "Rau xanh", "Món ăn thanh đạm"],
+    badFoods: ["Món ăn cay, kích thích", "Thịt gà", "Thực phẩm chế biến sẵn nhiều phụ gia", "Một số loại thuốc (cần kiểm tra phản ứng cá nhân)"],
+    lifestyle: [
+      "Có thể phản ứng nhạy cảm với thuốc hoặc thực phẩm chức năng, cần đặc biệt thận trọng khi dùng thuốc mới.",
+      "Món ăn cay, kích thích dễ gây rối loạn tiêu hóa nên hạn chế.",
+      "Do là thể chất hiếm gặp, dễ bị chẩn đoán nhầm, nên tham khảo ý kiến chuyên gia là rất cần thiết.",
+      "Nếu thường xuyên khó tiêu do căng thẳng, ăn uống điều độ và nghỉ ngơi hợp lý sẽ hữu ích."
+    ]
+  },
+  mokyang: {
+    nameKr: "Mộc Dương", nameEn: "Hepatonia",
+    strongOrgan: "Gan", weakOrgan: "Phổi",
+    summary: "Thường thận trọng, kiên nhẫn và có tính cách từ tốn. Xương cốt to chắc, dễ tăng cân. Tiêu hóa tốt thịt và sữa, và việc đổ mồ hôi được xem là có lợi cho sức khỏe của thể chất này.",
+    goodFoods: ["Thịt bò, thịt heo", "Sữa và chế phẩm từ sữa", "Rau củ (cà rốt, củ cải...)", "Ngũ cốc"],
+    badFoods: ["Rau lá xanh (nếu ăn quá nhiều)", "Hải sản, cá", "Món ăn lạnh"],
+    lifestyle: [
+      "Vận động vừa phải để đổ mồ hôi sẽ có lợi cho sức khỏe.",
+      "Hệ hô hấp (phổi) yếu nên cần chú ý phòng cảm cúm, viêm phế quản khi giao mùa.",
+      "Nên ưu tiên món ăn ấm nóng hơn là món lạnh.",
+      "Cần chú ý kiểm soát khẩu phần ăn để tránh ăn quá no."
+    ]
+  },
+  mokeum: {
+    nameKr: "Mộc Âm", nameEn: "Cholecystonia",
+    strongOrgan: "Túi mật (Đởm)", weakOrgan: "Đại tràng",
+    summary: "Có tính cách hòa đồng, thong thả tương tự thể Mộc Dương. Hợp với thịt và các sản phẩm từ sữa, nhưng dễ bị đau bụng nếu ăn đồ lạnh. Nhìn chung có hệ tiêu hóa khá ổn định.",
+    goodFoods: ["Thịt (bò, heo)", "Sữa và chế phẩm từ sữa", "Món ngũ cốc ấm nóng", "Rau củ"],
+    badFoods: ["Đồ ăn, thức uống lạnh", "Đồ ăn sống như gỏi cá quá nhiều", "Món ăn nhiều dầu mỡ, kích thích"],
+    lifestyle: [
+      "Đồ ăn và thức uống lạnh dễ gây rối loạn tiêu hóa nên cần thận trọng.",
+      "Vận động vừa phải và sinh hoạt điều độ rất phù hợp với thể chất này.",
+      "Đại tràng vốn yếu nên cần giữ ấm vùng bụng.",
+      "Nên tránh ăn uống quá độ."
+    ]
+  },
+  suyang: {
+    nameKr: "Thủy Dương", nameEn: "Renotonia",
+    strongOrgan: "Thận", weakOrgan: "Tụy",
+    summary: "Thường điềm tĩnh, tỉ mỉ và có kế hoạch. Thể hình gầy, đặc biệt sợ lạnh và hay bị lạnh tay chân. Hệ tiêu hóa yếu nên dễ bị đau bụng khi ăn đồ lạnh.",
+    goodFoods: ["Món ăn có tính ấm", "Ngũ cốc như gạo nếp, gạo lứt", "Rau củ đã nấu chín", "Gừng, hành lá và các gia vị có tính ấm"],
+    badFoods: ["Đồ ăn, thức uống lạnh, kem lạnh", "Thực phẩm từ bột mì (nếu ăn quá nhiều)", "Món ăn nhiều dầu mỡ, khó tiêu"],
+    lifestyle: [
+      "Tránh tiếp xúc với đồ ăn và môi trường lạnh, giữ ấm cơ thể.",
+      "Chức năng tiêu hóa (tụy) yếu nên cần tránh ăn quá no và ăn chậm rãi.",
+      "Tính hay lo lắng nên việc giữ tâm lý thoải mái sẽ có lợi cho sức khỏe.",
+      "Nên chú ý ngủ đủ giấc và giữ ấm cơ thể."
+    ]
+  },
+  sueum: {
+    nameKr: "Thủy Âm", nameEn: "Vesicotonia",
+    strongOrgan: "Bàng quang", weakOrgan: "Dạ dày",
+    summary: "Được xem là có hệ tiêu hóa (dạ dày) yếu nhất trong 8 thể chất, tính cách nhạy cảm và tỉ mỉ. Ăn ít sẽ phù hợp hơn với cơ thể, chỉ cần ăn hơi quá cũng dễ bị đầy bụng, khó tiêu. Đặc biệt yếu với đồ ăn lạnh và thịt heo.",
+    goodFoods: ["Món ăn được nấu chín, ấm nóng", "Thịt gà", "Ngũ cốc như gạo nếp, gạo lứt", "Rau củ đã nấu chín"],
+    badFoods: ["Đồ ăn, thức uống lạnh", "Thịt heo", "Thực phẩm từ bột mì (nếu ăn quá nhiều)", "Món ăn nhiều dầu mỡ, khó tiêu"],
+    lifestyle: [
+      "Dạ dày yếu nên cần ăn thành nhiều bữa nhỏ, ăn chậm nhai kỹ.",
+      "Đồ ăn lạnh và thịt heo dễ gây rối loạn tiêu hóa nên cần thận trọng.",
+      "Nên giữ ấm cơ thể và tránh làm việc quá sức.",
+      "Tính cách nhạy cảm, dễ bị ảnh hưởng bởi căng thẳng nên cần giữ tâm lý ổn định."
+    ]
+  }
+};
+
+const QUESTIONS = [
+  {
+    category: "Thể hình / Khung xương",
+    text: "Thể hình nào gần giống với bạn nhất?",
+    options: [
+      { text: "Vai rộng, phần thân trên phát triển, phần dưới cơ thể tương đối yếu", scores: { geumyang: 3, geumeum: 2 } },
+      { text: "Khung xương to, chắc chắn, dễ tăng cân", scores: { mokyang: 3, mokeum: 2 } },
+      { text: "Đầy đặn, có nhiều mỡ, bụng to", scores: { toyang: 3, toeum: 2 } },
+      { text: "Toàn thân gầy, phần trên cơ thể mảnh khảnh", scores: { suyang: 2, sueum: 3 } }
+    ]
+  },
+  {
+    category: "Tính cách / Khí chất",
+    text: "Tính cách nào gần giống với bạn nhất?",
+    options: [
+      { text: "Quyết đoán, có động lực hành động mạnh, thẳng thắn nói ra suy nghĩ", scores: { geumyang: 3, geumeum: 3 } },
+      { text: "Thận trọng, kiên nhẫn, từ tốn", scores: { mokyang: 3, mokeum: 2 } },
+      { text: "Hòa đồng, năng động, cởi mở, hơi nóng tính", scores: { toyang: 3, toeum: 3 } },
+      { text: "Điềm tĩnh, tỉ mỉ, hay lo lắng, nhút nhát", scores: { suyang: 3, sueum: 3 } }
+    ]
+  },
+  {
+    category: "Khả năng tiêu hóa",
+    text: "Khả năng tiêu hóa của bạn thế nào?",
+    options: [
+      { text: "Rất tốt, ăn gì cũng tiêu hóa tốt", scores: { toyang: 3, toeum: 2, mokyang: 1 } },
+      { text: "Bình thường nhưng yếu với thịt, sữa và một số thực phẩm nhất định", scores: { geumyang: 2, geumeum: 2 } },
+      { text: "Nhạy cảm, chỉ ăn hơi nhiều là đầy bụng, khó tiêu", scores: { sueum: 3, suyang: 1 } },
+      { text: "Bình thường, ăn ít sẽ thấy thoải mái hơn", scores: { suyang: 2, mokeum: 1 } }
+    ]
+  },
+  {
+    category: "Phản ứng với thực phẩm - Thịt",
+    text: "Khi ăn thịt (bò, heo...) bạn cảm thấy thế nào?",
+    options: [
+      { text: "Rất hợp, ăn xong thấy có sức lực, thích ăn thịt", scores: { mokyang: 3, mokeum: 3 } },
+      { text: "Ăn xong thấy đầy bụng, khó chịu", scores: { geumyang: 3, geumeum: 2 } },
+      { text: "Thịt heo thì ổn nhưng thịt gà thì hơi nặng bụng", scores: { toyang: 2, toeum: 2 } },
+      { text: "Thịt gà nấu ấm thì hợp với tôi", scores: { sueum: 3 } }
+    ]
+  },
+  {
+    category: "Phản ứng với thực phẩm - Sữa",
+    text: "Khi uống sữa, ăn phô mai... bạn cảm thấy thế nào?",
+    options: [
+      { text: "Rất hợp và tiêu hóa tốt", scores: { mokyang: 3, mokeum: 2 } },
+      { text: "Bụng khó chịu hoặc bị tiêu chảy", scores: { geumyang: 2, suyang: 1, sueum: 1 } },
+      { text: "Bình thường, không có vấn đề gì đáng kể", scores: { toyang: 1, toeum: 1 } }
+    ]
+  },
+  {
+    category: "Phản ứng với thực phẩm - Bột mì",
+    text: "Khi ăn nhiều món từ bột mì (bánh mì, mì...) bạn cảm thấy thế nào?",
+    options: [
+      { text: "Ăn thường xuyên cũng không sao", scores: { mokyang: 1, toyang: 1 } },
+      { text: "Bụng đầy hơi hoặc cơ thể có cảm giác sưng phù", scores: { geumyang: 3, geumeum: 2 } },
+      { text: "Khó tiêu, cảm giác như bị đầy bụng", scores: { suyang: 1, sueum: 2 } }
+    ]
+  },
+  {
+    category: "Phản ứng với thực phẩm - Hải sản",
+    text: "Khi ăn cá, hải sản bạn cảm thấy thế nào?",
+    options: [
+      { text: "Rất hợp, tôi thích ăn hải sản", scores: { geumyang: 3, geumeum: 3, toyang: 2, toeum: 3 } },
+      { text: "Ăn xong thấy bụng lạnh hoặc bị rối loạn tiêu hóa", scores: { mokyang: 3, mokeum: 2 } }
+    ]
+  },
+  {
+    category: "Phản ứng với thực phẩm - Đồ cay",
+    text: "Khi ăn đồ ăn cay bạn cảm thấy thế nào?",
+    options: [
+      { text: "Ăn tốt, đổ mồ hôi và thấy dễ chịu", scores: { mokyang: 1, suyang: 1 } },
+      { text: "Bị xót ruột hoặc khó chịu đến hôm sau", scores: { toyang: 3, toeum: 3 } },
+      { text: "Bình thường, ăn được", scores: { geumyang: 1, geumeum: 1 } }
+    ]
+  },
+  {
+    category: "Phản ứng với thực phẩm - Đồ lạnh",
+    text: "Khi ăn đồ lạnh (mì lạnh, kem...) bạn cảm thấy thế nào?",
+    options: [
+      { text: "Dễ bị đau bụng hoặc tiêu chảy", scores: { suyang: 3, sueum: 3, mokeum: 1 } },
+      { text: "Không sao cả, ăn vào còn thấy mát mẻ dễ chịu", scores: { geumyang: 2, toyang: 2 } }
+    ]
+  },
+  {
+    category: "Đổ mồ hôi",
+    text: "Bạn cảm thấy thế nào về việc đổ mồ hôi?",
+    options: [
+      { text: "Đổ mồ hôi xong cảm thấy cơ thể nhẹ nhõm, dễ chịu", scores: { mokyang: 3, mokeum: 2 } },
+      { text: "Đổ nhiều mồ hôi lại khiến cơ thể mệt mỏi, mất sức", scores: { geumyang: 3, geumeum: 2 } },
+      { text: "Ít khi đổ mồ hôi", scores: { suyang: 2, sueum: 2 } },
+      { text: "Đổ mồ hôi thì cũng bình thường, không để ý nhiều", scores: { toyang: 1, toeum: 1 } }
+    ]
+  },
+  {
+    category: "Độ nhạy cảm với nóng/lạnh",
+    text: "Giữa nóng và lạnh, bạn khó chịu với cái nào hơn?",
+    options: [
+      { text: "Khó chịu với thời tiết nóng", scores: { toyang: 2, mokyang: 1 } },
+      { text: "Khó chịu với thời tiết lạnh, tay chân hay lạnh", scores: { suyang: 3, sueum: 3, geumyang: 1 } },
+      { text: "Cả hai đều không ảnh hưởng nhiều", scores: { geumeum: 1, mokeum: 1 } }
+    ]
+  },
+  {
+    category: "Đại tiện / Tiểu tiện",
+    text: "Tình trạng đại tiện của bạn thường như thế nào?",
+    options: [
+      { text: "Phân lỏng hoặc thường xuyên bị tiêu chảy", scores: { geumeum: 2, sueum: 2 } },
+      { text: "Hay bị táo bón", scores: { mokyang: 2, toeum: 1 } },
+      { text: "Đều đặn, bình thường", scores: { toyang: 2, mokeum: 1 } }
+    ]
+  },
+  {
+    category: "Làn da",
+    text: "Tình trạng da nào gần giống với bạn nhất?",
+    options: [
+      { text: "Da khô, nhạy cảm, dễ bị dị ứng", scores: { geumyang: 3, toeum: 2 } },
+      { text: "Da dầu, dễ nổi mụn", scores: { toyang: 2, mokeum: 1 } },
+      { text: "Da dày, chắc khỏe, ít bị nứt nẻ", scores: { mokyang: 2, suyang: 1 } },
+      { text: "Da mỏng, trắng, dễ ửng đỏ", scores: { sueum: 2, geumeum: 1 } }
+    ]
+  },
+  {
+    category: "Phản ứng dị ứng thuốc",
+    text: "Bạn có dễ bị phản ứng dị ứng với thuốc hoặc chất lạ không?",
+    options: [
+      { text: "Rất nhạy cảm, uống thuốc dễ bị tác dụng phụ", scores: { toeum: 4, geumyang: 1 } },
+      { text: "Thỉnh thoảng có", scores: { geumyang: 1, geumeum: 1, toeum: 1 } },
+      { text: "Bình thường, hầu như không có vấn đề gì", scores: { mokyang: 1, toyang: 1, suyang: 1, sueum: 1 } }
+    ]
+  },
+  {
+    category: "Phong cách sinh hoạt",
+    text: "Phong cách sinh hoạt nào gần giống với bạn nhất?",
+    options: [
+      { text: "Thích vận động, tập thể dục, năng động", scores: { mokyang: 2, toyang: 2 } },
+      { text: "Thích ngồi yên làm việc, tĩnh lặng", scores: { suyang: 2, geumeum: 1 } },
+      { text: "Thích gặp gỡ, trò chuyện với mọi người", scores: { toyang: 2, toeum: 2 } },
+      { text: "Thích ở một mình, thích các hoạt động mang tính phân tích", scores: { geumyang: 2, sueum: 1 } }
+    ]
+  },
+  {
+    category: "Sở thích nhiệt độ nước uống",
+    text: "Khi uống nước, bạn thích nhiệt độ nào hơn?",
+    options: [
+      { text: "Nước mát hoặc nước lạnh", scores: { geumyang: 2, toyang: 2 } },
+      { text: "Nước ấm hoặc nước nóng", scores: { suyang: 3, sueum: 3, mokeum: 1 } }
+    ]
+  }
+];
+
+/* Nếu chênh lệch điểm giữa hạng 1 và hạng 2 nhỏ hơn tỉ lệ này so với điểm hạng 1, sẽ hiển thị thông báo "gần với". */
+const CLOSE_SCORE_RATIO = 0.18;
+
+/* ======================================================================
+   Trạng thái & chuyển màn hình
+   ====================================================================== */
+let currentIndex = 0;
+const answers = new Array(QUESTIONS.length).fill(null);
+
+const screens = {
+  intro: document.getElementById('screen-intro'),
+  quiz: document.getElementById('screen-quiz'),
+  result: document.getElementById('screen-result')
+};
+
+function showScreen(name){
+  Object.values(screens).forEach(s => s.classList.remove('active'));
+  screens[name].classList.add('active');
+  window.scrollTo(0,0);
+}
+
+document.getElementById('btn-start').addEventListener('click', () => {
+  currentIndex = 0;
+  answers.fill(null);
+  renderQuestion();
+  showScreen('quiz');
+});
+
+document.getElementById('btn-restart').addEventListener('click', () => {
+  showScreen('intro');
+});
+
+/* ======================================================================
+   Hiển thị câu hỏi
+   ====================================================================== */
+function renderQuestion(){
+  const q = QUESTIONS[currentIndex];
+  document.getElementById('q-category').textContent = q.category;
+  document.getElementById('q-text').textContent = q.text;
+
+  const optionsEl = document.getElementById('q-options');
+  optionsEl.innerHTML = '';
+  q.options.forEach((opt, i) => {
+    const div = document.createElement('div');
+    div.className = 'option' + (answers[currentIndex] === i ? ' selected' : '');
+    div.textContent = opt.text;
+    div.addEventListener('click', () => selectOption(i));
+    optionsEl.appendChild(div);
+  });
+
+  const pct = Math.round((currentIndex) / QUESTIONS.length * 100);
+  document.getElementById('progress-fill').style.width = pct + '%';
+  document.getElementById('progress-label').textContent = `${currentIndex + 1} / ${QUESTIONS.length}`;
+
+  document.getElementById('btn-prev').disabled = currentIndex === 0;
+  document.getElementById('btn-prev').style.opacity = currentIndex === 0 ? 0.4 : 1;
+
+  const nextBtn = document.getElementById('btn-next');
+  nextBtn.disabled = answers[currentIndex] === null;
+  nextBtn.textContent = currentIndex === QUESTIONS.length - 1 ? 'Xem kết quả' : 'Tiếp theo';
+}
+
+function selectOption(i){
+  answers[currentIndex] = i;
+  renderQuestion();
+}
+
+document.getElementById('btn-prev').addEventListener('click', () => {
+  if (currentIndex > 0){
+    currentIndex -= 1;
+    renderQuestion();
+  }
+});
+
+document.getElementById('btn-next').addEventListener('click', () => {
+  if (answers[currentIndex] === null) return;
+  if (currentIndex < QUESTIONS.length - 1){
+    currentIndex += 1;
+    renderQuestion();
+  } else {
+    const result = computeResult(answers);
+    renderResult(result);
+    showScreen('result');
+  }
+});
+
+/* ======================================================================
+   Logic chấm điểm
+   ====================================================================== */
+function computeResult(answerIndexes){
+  const totals = {};
+  Object.keys(CONSTITUTIONS).forEach(k => totals[k] = 0);
+
+  answerIndexes.forEach((optIndex, qIndex) => {
+    if (optIndex === null) return;
+    const scores = QUESTIONS[qIndex].options[optIndex].scores || {};
+    Object.keys(scores).forEach(k => {
+      totals[k] = (totals[k] || 0) + scores[k];
+    });
+  });
+
+  const ranked = Object.keys(totals)
+    .map(k => ({ key: k, score: totals[k] }))
+    .sort((a, b) => b.score - a.score);
+
+  const top = ranked[0];
+  const second = ranked[1];
+  const isClose = top.score > 0 &&
+    (top.score - second.score) <= top.score * CLOSE_SCORE_RATIO;
+
+  return { totals, ranked, top, second, isClose };
+}
+
+/* ======================================================================
+   Hiển thị kết quả
+   ====================================================================== */
+function renderResult(result){
+  const topType = CONSTITUTIONS[result.top.key];
+  const secondType = CONSTITUTIONS[result.second.key];
+
+  let html = '';
+
+  html += `
+    <div class="result-hero">
+      <div class="type-en">${topType.nameEn}</div>
+      <div class="type-kr">${topType.nameKr}</div>
+      <div class="organ-tags">
+        <span class="organ-tag strong">Tạng phủ mạnh · ${topType.strongOrgan}</span>
+        <span class="organ-tag weak">Tạng phủ yếu · ${topType.weakOrgan}</span>
+      </div>
+    </div>
+  `;
+
+  if (result.isClose){
+    html += `
+      <div class="near-note">
+        Gần với thể chất <strong>${topType.nameKr}</strong> nhất, nhưng cũng có xu hướng của thể chất <strong>${secondType.nameKr}</strong>.
+        Đây là kết quả ước tính mang tính xu hướng, vui lòng chỉ tham khảo.
+      </div>
+    `;
+  }
+
+  html += `
+    <div class="card">
+      <h2>Đặc điểm thể chất</h2>
+      <p>${topType.summary}</p>
+    </div>
+  `;
+
+  html += `
+    <div class="section-title">Hướng dẫn thực phẩm</div>
+    <div class="food-grid">
+      <div class="food-box good">
+        <h3>Thực phẩm có lợi</h3>
+        <ul>${topType.goodFoods.map(f => `<li>${f}</li>`).join('')}</ul>
+      </div>
+      <div class="food-box bad">
+        <h3>Thực phẩm nên tránh</h3>
+        <ul>${topType.badFoods.map(f => `<li>${f}</li>`).join('')}</ul>
+      </div>
+    </div>
+  `;
+
+  html += `
+    <div class="section-title">Lưu ý trong sinh hoạt</div>
+    <div class="card">
+      <ul class="lifestyle-list">
+        ${topType.lifestyle.map(l => `<li>${l}</li>`).join('')}
+      </ul>
+    </div>
+  `;
+
+  html += `
+    <div class="score-detail">
+      Tổng điểm: ${result.ranked.map(r => `${CONSTITUTIONS[r.key].nameKr} ${r.score} điểm`).join(' · ')}
+    </div>
+  `;
+
+  document.getElementById('result-content').innerHTML = html;
+
+  window.__lastResult = result;
+}
+
+/* ======================================================================
+   Lưu kết quả thành ảnh (vẽ trực tiếp bằng Canvas, không dùng thư viện ngoài)
+   ====================================================================== */
+document.getElementById('btn-save-image').addEventListener('click', () => {
+  const result = window.__lastResult;
+  if (!result) return;
+  const type = CONSTITUTIONS[result.top.key];
+
+  const canvas = document.getElementById('shareCanvas');
+  const ctx = canvas.getContext('2d');
+  const W = canvas.width, H = canvas.height;
+
+  const grad = ctx.createLinearGradient(0, 0, 0, H);
+  grad.addColorStop(0, '#fbf3e9');
+  grad.addColorStop(1, '#f6f4ef');
+  ctx.fillStyle = grad;
+  ctx.fillRect(0, 0, W, H);
+
+  ctx.textAlign = 'center';
+
+  ctx.fillStyle = '#6b6960';
+  ctx.font = '24px "Segoe UI", sans-serif';
+  ctx.fillText(type.nameEn, W / 2, 110);
+
+  ctx.fillStyle = '#5c4726';
+  ctx.font = 'bold 56px "Segoe UI", sans-serif';
+  ctx.fillText(type.nameKr, W / 2, 180);
+
+  ctx.font = '22px "Segoe UI", sans-serif';
+  ctx.fillStyle = '#2f6d3c';
+  ctx.fillText(`Tạng phủ mạnh · ${type.strongOrgan}`, W / 2, 230);
+  ctx.fillStyle = '#b3452f';
+  ctx.fillText(`Tạng phủ yếu · ${type.weakOrgan}`, W / 2, 265);
+
+  ctx.textAlign = 'left';
+  ctx.fillStyle = '#2b2b28';
+  ctx.font = '20px "Segoe UI", sans-serif';
+  wrapText(ctx, type.summary, 60, 330, W - 120, 32);
+
+  let y = 480;
+  ctx.font = 'bold 24px "Segoe UI", sans-serif';
+  ctx.fillStyle = '#2f6d3c';
+  ctx.fillText('Thực phẩm có lợi', 60, y);
+  ctx.font = '20px "Segoe UI", sans-serif';
+  ctx.fillStyle = '#2b2b28';
+  type.goodFoods.forEach((f, i) => {
+    ctx.fillText('· ' + f, 60, y + 36 + i * 30);
+  });
+
+  y = 480;
+  ctx.font = 'bold 24px "Segoe UI", sans-serif';
+  ctx.fillStyle = '#b3452f';
+  ctx.fillText('Thực phẩm nên tránh', W / 2 + 20, y);
+  ctx.font = '20px "Segoe UI", sans-serif';
+  ctx.fillStyle = '#2b2b28';
+  type.badFoods.forEach((f, i) => {
+    ctx.fillText('· ' + f, W / 2 + 20, y + 36 + i * 30);
+  });
+
+  ctx.textAlign = 'center';
+  ctx.font = '16px "Segoe UI", sans-serif';
+  ctx.fillStyle = '#6b6960';
+  wrapText(ctx, 'Kết quả này chỉ là ước tính tham khảo dựa trên khảo sát, không phải chẩn đoán y khoa. Để xác định chính xác 8 thể chất, cần được bác sĩ Đông y chẩn mạch và thăm khám chuyên môn.', W / 2, H - 90, W - 120, 24, true);
+
+  ctx.font = '14px "Segoe UI", sans-serif';
+  ctx.fillStyle = '#8a6d3b';
+  ctx.fillText('Trắc nghiệm 8 Thể Chất · Công cụ tham khảo', W / 2, H - 30);
+
+  const link = document.createElement('a');
+  link.download = `KetQua_${type.nameKr.replace(/\s+/g,'')}.png`;
+  link.href = canvas.toDataURL('image/png');
+  link.click();
+});
+
+function wrapText(ctx, text, x, y, maxWidth, lineHeight, centered){
+  const words = text.split(' ');
+  let line = '';
+  let curY = y;
+  const align = centered ? 'center' : 'left';
+  ctx.textAlign = align;
+  for (let i = 0; i < words.length; i++){
+    const testLine = line + words[i] + ' ';
+    if (ctx.measureText(testLine).width > maxWidth && line.length > 0){
+      ctx.fillText(line, x, curY);
+      line = words[i] + ' ';
+      curY += lineHeight;
+    } else {
+      line = testLine;
+    }
+  }
+  ctx.fillText(line, x, curY);
+}
+
+/* ======================================================================
+   Chia sẻ liên kết kết quả
+   - Câu trả lời của người dùng được mã hóa base64 trong query string.
+   - Khi mở lại liên kết này, kết quả sẽ tự động được tính lại và hiển thị.
+   ====================================================================== */
+document.getElementById('btn-share-link').addEventListener('click', async () => {
+  const result = window.__lastResult;
+  if (!result) return;
+  const type = CONSTITUTIONS[result.top.key];
+
+  const encoded = encodeAnswers(answers);
+  const url = `${location.origin}${location.pathname}?a=${encoded}`;
+  const shareText = `Kết quả trắc nghiệm 8 thể chất của tôi là "${type.nameKr} (${type.nameEn})". (Kết quả ước tính mang tính tham khảo)`;
+
+  if (navigator.share){
+    try {
+      await navigator.share({ title: 'Kết quả trắc nghiệm 8 Thể Chất', text: shareText, url });
+      return;
+    } catch (e) {
+      // Người dùng hủy chia sẻ — chuyển sang sao chép vào clipboard
+    }
+  }
+
+  try {
+    await navigator.clipboard.writeText(`${shareText}\n${url}`);
+    alert('Đã sao chép liên kết kết quả vào clipboard.');
+  } catch (e) {
+    alert(url);
+  }
+});
+
+function encodeAnswers(arr){
+  const raw = arr.map(v => v === null ? -1 : v).join(',');
+  return btoa(raw).replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
+}
+
+function decodeAnswers(str){
+  try {
+    const base64 = str.replace(/-/g, '+').replace(/_/g, '/');
+    const raw = atob(base64);
+    return raw.split(',').map(v => {
+      const n = parseInt(v, 10);
+      return n === -1 ? null : n;
+    });
+  } catch (e) {
+    return null;
+  }
+}
+
+(function initFromShareLink(){
+  const params = new URLSearchParams(location.search);
+  const a = params.get('a');
+  if (!a) return;
+  const decoded = decodeAnswers(a);
+  if (!decoded || decoded.length !== QUESTIONS.length) return;
+  if (decoded.some(v => v === null)) return;
+
+  decoded.forEach((v, i) => answers[i] = v);
+  const result = computeResult(answers);
+  renderResult(result);
+  showScreen('result');
+})();
+</script>
+</body>
+</html>
